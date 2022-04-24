@@ -1,0 +1,84 @@
+<Button>:
+    font_size:40
+    color: (200/255, 214/255, 229/255,1)
+    background_color: (131/255, 149/255, 167/255,0.5)
+
+
+<FloatLayouts>:
+    canvas.before:
+        Color:
+            rgba: (87/255, 101/255, 116/255,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Button:
+        pos_hint: {"x":0.05, "top":0.95}
+        size_hint: 0.9, 0.2
+        text: "LOGO"
+
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x": 0.05 , "top":0.70}
+        text: "App1"
+        on_press: root.CickedOne()
+
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.2875, "top":0.70}
+        text: "App2"
+        on_press: root.CickedTwo()
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.525, "top":0.70}
+        text: "App3"
+        on_press: root.CickedThree()
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.750, "top":0.70}
+        text: "App4"
+        on_press: root.CickedFour()
+
+<P1>:
+    Label:
+        text: "App 1 conf"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":0.80}
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.750, "top":0.70}
+        text: "Button"
+        on_press: root.ClickedConf1()
+
+<P2>:
+    Label:
+        text: "App 2 conf"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":0.80}
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.750, "top":0.70}
+        text: "Button"
+        on_press: root.ClickedConf2()
+
+<P3>:
+    Label:
+        text: "App 3 conf"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":0.80}
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.750, "top":0.70}
+        text: "Button"
+        on_press: root.ClickedConf3()
+
+<P4>:
+    Label:
+        text: "App 4 conf"
+        size_hint: 0.6, 0.2
+        pos_hint: {"x":0.2, "top":0.80}
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {"x":0.750, "top":0.70}
+        text: "Button"
+        on_press: root.ClickedConf4()
+
