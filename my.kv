@@ -19,7 +19,7 @@
     Button:
         size_hint: 0.2, 0.2
         pos_hint: {"x": 0.05 , "top":0.70}
-        text: "App1"
+        text: "SYN"
         on_press: root.CickedOne()
 
     Button:
@@ -39,15 +39,21 @@
         on_press: root.CickedFour()
 
 <P1>:
-    Label:
-        text: "App 1 conf"
-        size_hint: 0.6, 0.2
-        pos_hint: {"x":0.2, "top":0.80}
+    Spinner:
+        id: spinner_id
+        on_text: root.spinner_clicked(spinner_id.text)
+        text: "None"
+        values: []
+        size_hint: 0.7, 0.15
+        pos_hint: {"x":0.0, "top":1}
     Button:
-        size_hint: 0.2, 0.2
-        pos_hint: {"x":0.750, "top":0.70}
-        text: "Button"
+        id: scan_button
+        size_hint: 0.3, 0.15
+        pos_hint: {"x":0.7, "top":1}
+        text: "Scan"
         on_press: root.ClickedConf1()
+
+
 
 <P2>:
     Label:
