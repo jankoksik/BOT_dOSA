@@ -59,8 +59,15 @@ class P1(FloatLayout):
         
     def spinner_clicked(self, value):
         print("Selected ip is " + value)
-        
+        self.ids.ClickedConf1_port.disabled=False
+    
 
+    def ClickedConf1_port(self):
+        res = []
+        res = modules.auxilliary.scan_host_ports_multi_thread(self.ids.spinner_id_port.text)
+        print(res)
+        P1.finished = True
+        #TODO: FINISH
 
     def SearchForHosts(self):
         net_info = self.Dane.get_network_info()
@@ -68,11 +75,12 @@ class P1(FloatLayout):
         result = self.Dane.scan_network_multi_thread(net_info[3],net_info[4])
         print(result)
         P1.finished = True
-        while(modules.auxilliary.dane.JOINED!=True):
-            sleep(0.1)
         print("[INFO] succesfully closed threads")
         modules.auxilliary.dane.JOINED=False
-        P1.c.join()
+        try:
+            P1.c.join()
+        except:
+            print("kupa")
         P1.c = NULL
 
     def Refresh(self, interval):
@@ -104,7 +112,7 @@ class P4(FloatLayout):
 
 def showPopUp1():
     show = P1()
-    popupWindow = Popup(title="SYN FLOOD CONF", content=show, size_hint=(0.8,0.8) )
+    popupWindow = Popup(title="Wifi DOS Conf", content=show, size_hint=(0.8,0.8) )
     popupWindow.open()
 
 def showPopUp2():

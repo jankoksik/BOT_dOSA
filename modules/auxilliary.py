@@ -20,7 +20,9 @@ class dane:
     target_hosts = []
     HOSTS = []
     Percent = "Scan"
+    PercentPort = "Scan"
     STOP = False
+    SopPort=False
     JOINED = False
 
 
@@ -58,12 +60,15 @@ class dane:
         threads = []
         Percent = ""
         for i in range(0,int(iterator)):
-            if(STOP):
+            if(self.STOP):
                 break
             target_ip = str(target_network + i)
-            if(i%10==0):
-                self.Percent = "" + str(round(i/int(iterator)*100,1))+"%"
-                #print("t-"+Percent)
+            if(len(threads) > 4):
+                for t in threads:
+                    t.join()
+                threads = []
+            self.Percent = "" + str(round(i/int(iterator)*100,1))+"%"
+            #print("t-"+Percent)
             thread = threading.Thread(target = self.send_ping_multi_thread,args = [target_ip,hosts])
             sleep(0.2)
                 
@@ -71,7 +76,7 @@ class dane:
             thread.start()
             threads.append(thread)
 
-    
+        print("cleaning " + str(len(threads)) + " threads")
         for t in threads:
             t.join()
         self.JOINED = True

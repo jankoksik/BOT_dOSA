@@ -19,7 +19,7 @@
     Button:
         size_hint: 0.2, 0.2
         pos_hint: {"x": 0.05 , "top":0.70}
-        text: "SYN"
+        text: "WIFI"
         on_press: root.CickedOne()
 
     Button:
@@ -39,19 +39,71 @@
         on_press: root.CickedFour()
 
 <P1>:
+    Label:
+        id: Ip_label
+        text: "[b]IP:[/b]"
+        size_hint: (0.7, 0.15)
+        markup: True
+        pos_hint: {"x":0.0, "top":1}
     Spinner:
         id: spinner_id
         on_text: root.spinner_clicked(spinner_id.text)
         text: "None"
         values: []
         size_hint: 0.7, 0.15
-        pos_hint: {"x":0.0, "top":1}
+        pos_hint: {"x":0.0, "top":.85}
     Button:
         id: scan_button
         size_hint: 0.3, 0.15
-        pos_hint: {"x":0.7, "top":1}
+        pos_hint: {"x":0.7, "top":.85}
         text: "Scan"
         on_press: root.ClickedConf1()
+    Label:
+        id: port_label
+        text: "[b]PORT:[/b]"
+        size_hint: (0.7, 0.15)
+        markup: True
+        pos_hint: {"x":0.0, "top":.70}
+    Spinner:
+        id: spinner_id_port
+        on_text: root.spinner_clicked_port(spinner_id_port.text)
+        text: "None"
+        values: []
+        size_hint: 0.7, 0.15
+        pos_hint: {"x":0.0, "top":.55}
+    Button:
+        id: scan_button_port
+        size_hint: 0.3, 0.15
+        pos_hint: {"x":0.7, "top":.55}
+        text: "Scan"
+        disabled: True 
+        on_press: root.ClickedConf1_port()
+    Label:
+        id: Attack_label
+        text: "[b]Attack:[/b]"
+        size_hint: (0.7, 0.15)
+        markup: True
+        pos_hint: {"x":0.0, "top":.40}
+    Spinner:
+        id: spinner_id_atk
+        on_text: root.spinner_clicked_atk(spinner_id_atk.text)
+        text: "None"
+        values: []
+        size_hint: 0.7, 0.15
+        pos_hint: {"x":0.0, "top":.25}
+    Button:
+        id: scan_button_atk
+        size_hint: 0.3, 0.15
+        pos_hint: {"x":0.7, "top":.25}
+        disabled: True 
+        text: "Attack"
+        on_press: root.ClickedConf1_atk()
+    Label:
+        id: Satus_label
+        text: "[b]Status: IDLE[/b]"
+        size_hint: (0.7, 0.15)
+        markup: True
+        pos_hint: {"x":0.0, "top":.10}
 
 
 
