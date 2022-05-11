@@ -20,10 +20,8 @@ class dane:
     target_hosts = []
     HOSTS = []
     Percent = "Scan"
-    PercentPort = "Scan"
+    StatusText="IDLE"
     STOP = False
-    SopPort=False
-    JOINED = False
 
 
     def get_network_info(self):
@@ -58,6 +56,7 @@ class dane:
         STOP = False
         hosts = []
         threads = []
+        self.HOSTS=[]
         Percent = ""
         for i in range(0,int(iterator)):
             if(self.STOP):
@@ -79,7 +78,6 @@ class dane:
         print("cleaning " + str(len(threads)) + " threads")
         for t in threads:
             t.join()
-        self.JOINED = True
         self.Percent = "Scan"
         self.STOP = False
         return hosts
@@ -106,7 +104,7 @@ class dane:
         for i in range(0,int(iterator)):
             ProgressBarIterator = i
             target_ip = str(target_network+ i)
-            result = send_ping(target_ip)
+            result = self.send_ping(target_ip)
             if(result == True):
                 hosts.append(target_ip)
 
@@ -123,7 +121,23 @@ class dane:
             print("Port " +  str(dst_port) + " found open")
         #else:
             #print("Port " +  str(dst_port) + " closed")
-                
+
+    def scan_host_ports_multi_thread_get_first(self,dst_ip):
+        ports = []
+        threads = []
+
+        for port in range(0,1024):
+            thread = threading.Thread(target = self.scan_port_multi_thread, args = [dst_ip,port,ports])
+            sleep(0.1)
+            thread.start()
+            threads.append(thread)
+            if(len(ports) >= 1):
+                return ports[0]
+
+        for t in threads:
+            t.join()
+        
+        return ports     
 
     def scan_host_ports_multi_thread(self,dst_ip):
 
@@ -131,7 +145,7 @@ class dane:
         threads = []
 
         for port in range(0,1024):
-            thread = threading.Thread(target = scan_port_multi_thread, args = [dst_ip,port,ports])
+            thread = threading.Thread(target = self.scan_port_multi_thread, args = [dst_ip,port,ports])
             sleep(0.1)
             thread.start()
             threads.append(thread)
@@ -160,7 +174,7 @@ class dane:
     def scan_host_ports_single_thread(self,dst_ip):
         ports = []
         for i in range(0,1023):
-            res = scan_port(dst_ip,i)
+            res =self.scan_port(dst_ip,i)
             if(res == True):
                 ports.append(i)
         

