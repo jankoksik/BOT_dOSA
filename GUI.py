@@ -69,20 +69,21 @@ class P1(FloatLayout):
 
     def spinner_clicked_atk(self, value):
         print("Selected attack is " + value)
-        if (value == "SYN flood"):
-            print("Syn")
-        elif (value == "ARP spoof"):
-            print("ARP")
-        elif ("Smurf"):
-            print("Smurf")
-        else:
-            print("Nieznany atak")
+
 
     
     def ClickedConf1_atk(self):
         if(self.ATTACK_STOP == False):
             #Run attack
             self.ids.button_atk.text = "Stop"
+            if (self.ids.spinner_id_atk.text == "SYN flood"):
+                print("Syn")
+            elif (self.ids.spinner_id_atk.text == "ARP spoof"):
+                print("ARP")
+            elif (self.ids.spinner_id_atk.text == "Smurf"):
+                print("Smurf")
+            else:
+                print("Nieznany atak")
         else:
             #Stop attack
             self.ids.button_atk.text = "Attack"
