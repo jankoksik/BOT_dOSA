@@ -206,7 +206,7 @@ def showPopUp3():
 
 def showPopUp4():
     show = P4()
-    popupWindow = Popup(title="App4", content=show, size_hint=(0.8,0.8) )
+    popupWindow = Popup(title="Pixel flood", content=show, size_hint=(0.8,0.8) )
     popupWindow.open()
 
 
