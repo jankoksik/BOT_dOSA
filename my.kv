@@ -35,7 +35,7 @@
     Button:
         size_hint: 0.2, 0.2
         pos_hint: {"x":0.750, "top":0.70}
-        text: "App4"
+        text: "Pixel\nflood"
         on_press: root.CickedFour()
 
 <P1>:
@@ -115,13 +115,14 @@
         on_press: root.ClickedConf3()
 
 <P4>:
-    Label:
-        text: "Pixel flood"
-        size_hint: 0.6, 0.2
-        pos_hint: {"x":0.2, "top":0.80}
+    TextInput:
+        id: PF_ID
+        size_hint: 0, 0
+        pos_hint: {"x":2.0, "top":2.0}
+        disabled: True
     Button:
-        size_hint: 0.2, 0.2
-        pos_hint: {"x":0.750, "top":0.70}
-        text: "Button"
+        size_hint: 0.7, 0.3
+        pos_hint: {"x":0.15, "top":0.7}
+        text: "Copy path to image"
         on_press: root.ClickedConf4()
 

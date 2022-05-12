@@ -11,7 +11,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.animation import Animation
 from kivy.uix.popup import Popup
 from modules.arp import ARPSpoofer, disable_ip_forwarding, enable_ip_forwarding
-
+import os
 
 import modules.auxilliary
 from modules.smurf_attack import smurf_packet
@@ -185,7 +185,7 @@ class P3(FloatLayout):
 
 class P4(FloatLayout):
     def ClickedConf4(self):
-        print("button on conf 4")
+        self.ids.PF_ID.copy(data = os.path.abspath('modules/lottapixel.jpg'))
     
 
 def showPopUp1():
